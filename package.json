@@ -1,0 +1,19 @@
+{
+  "name": "founder-dilution-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Plain-English founder dilution and exit outcome dashboard with temporary saved scenarios.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test:unit": "node tests/math.test.mjs && node tests/presets.test.mjs && node tests/session-behavior.test.mjs && node scripts/validate-ui-copy.mjs",
+    "test:e2e": "python3 scripts/run-playwright-e2e.py",
+    "test": "npm run test:unit && npm run test:e2e",
+    "validate:all": "npm run test && npm run build",
+    "serve": "node scripts/serve.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {}
+}
