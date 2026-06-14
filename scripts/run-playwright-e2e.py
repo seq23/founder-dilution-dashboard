@@ -76,12 +76,18 @@ def assert_money_changes(before, after, label):
 
 
 def new_context(playwright, width=1440, height=1100):
-    chrome_path = os.environ.get("CHROMIUM_PATH", "/usr/bin/chromium")
+    launch_options = {
+        "viewport": {"width": width, "height": height},
+        "args": ["--no-sandbox", "--disable-web-security"],
+    }
+
+    chrome_path = os.environ.get("CHROMIUM_PATH")
+    if chrome_path:
+        launch_options["executable_path"] = chrome_path
+
     return playwright.chromium.launch_persistent_context(
         tempfile.mkdtemp(prefix="fdd-playwright-"),
-        executable_path=chrome_path,
-        viewport={"width": width, "height": height},
-        args=["--no-sandbox", "--disable-web-security"],
+        **launch_options,
     )
 
 

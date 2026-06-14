@@ -191,3 +191,113 @@ td:first-child { font-weight: 800; }
   .payment-ladder b { grid-column: 2; }
   .summary-card { min-height: auto; }
 }
+
+
+/* Hallmark remediation — West Peek hierarchy, mobile legibility, accent discipline */
+.brand-header {
+  min-height: 88px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+.brand-lockup { gap: 20px; min-width: 340px; }
+.brand-logo { width: 92px; height: 56px; }
+.brand-kicker { font-size: .72rem; letter-spacing: .19em; margin-bottom: 3px; }
+.brand-lockup strong { display: block; max-width: 390px; font-size: clamp(1.05rem, 2vw, 1.45rem); line-height: 1.08; }
+.brand-nav a { font-size: .98rem; font-weight: 850; border-bottom-width: 3px; }
+.hero { margin-top: 8px; margin-bottom: 26px; }
+.notice { border-radius: 20px; box-shadow: none; background: var(--wp-cream); }
+.dashboard-overview { grid-template-columns: 1.28fr .86fr .86fr; gap: 14px; }
+.summary-card { min-height: 196px; border-radius: 20px; box-shadow: 0 10px 34px rgba(5,5,5,.055); }
+.founder-summary {
+  background: var(--wp-black);
+  color: var(--wp-white);
+  border-color: var(--wp-black);
+  box-shadow: 0 22px 58px rgba(5,5,5,.16);
+}
+.founder-summary .card-label,
+.founder-summary p { color: rgba(255,255,255,.72); }
+.founder-summary strong { color: var(--wp-white); font-size: clamp(2.15rem, 4.8vw, 4rem); }
+.founder-summary .soft-callout { background: rgba(240,90,26,.16); color: var(--wp-white); border-color: rgba(240,90,26,.46); }
+.threshold-summary { background: var(--wp-cream); }
+.threshold-summary .soft-callout { background: var(--wp-white); border-color: var(--wp-border); }
+.temporary-note { background: var(--wp-cream); border-color: var(--wp-border); }
+.temporary-note strong { color: var(--wp-black); }
+.step { border-radius: 20px; box-shadow: 0 12px 42px rgba(5,5,5,.055); }
+.step-number { background: var(--wp-black); color: var(--wp-white); border-color: var(--wp-black); border-radius: 18px; }
+.helper { background: var(--wp-cream); border-color: var(--wp-border); }
+.payment-ladder strong { background: var(--wp-black); color: var(--wp-white); border-color: var(--wp-black); }
+.soft-callout { background: var(--wp-cream); border-color: var(--wp-border); }
+.table-scroll-hint { display: none; }
+.comparison-table-wrap { position: relative; padding-bottom: 4px; scrollbar-width: thin; scrollbar-color: var(--wp-orange) var(--wp-cream-2); }
+.comparison-table-wrap::after { content: "Swipe horizontally to compare →"; display: none; color: var(--wp-muted); font-size: .88rem; font-weight: 800; padding-top: 10px; }
+th { position: sticky; top: 0; z-index: 1; }
+.wp-footer {
+  margin: 34px -24px -24px;
+  padding: 28px 24px;
+  border-top: 1px solid var(--wp-border);
+  background: var(--wp-black);
+  color: var(--wp-white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.wp-footer-brand { display: flex; align-items: center; gap: 14px; min-width: 280px; }
+.wp-footer-brand img { width: 78px; height: 44px; object-fit: contain; filter: invert(1); }
+.wp-footer-brand strong, .wp-footer-brand span { display: block; }
+.wp-footer-brand strong { font-family: Georgia, 'Times New Roman', serif; font-size: 1.25rem; }
+.wp-footer-brand span { color: rgba(255,255,255,.68); font-size: .9rem; margin-top: 2px; }
+.wp-footer p { max-width: 720px; margin: 0; color: rgba(255,255,255,.68); font-size: .92rem; text-align: right; }
+
+@media (max-width: 900px) {
+  .brand-header { align-items: flex-start; }
+  .brand-lockup { min-width: 0; }
+  .dashboard-overview { grid-template-columns: 1fr 1fr; }
+  .founder-summary { grid-column: 1 / -1; }
+}
+
+@media (max-width: 680px) {
+  #app { padding: 16px; }
+  .brand-header {
+    position: relative;
+    margin: -16px -16px 20px;
+    padding: 16px;
+    min-height: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .brand-lockup { gap: 14px; }
+  .brand-logo { width: 76px; height: 46px; }
+  .brand-lockup strong { font-size: 1.05rem; }
+  .brand-nav { width: 100%; gap: 22px; padding: 0 0 7px; }
+  .brand-nav a { font-size: .96rem; min-height: 42px; display: inline-flex; align-items: center; }
+  .hero { grid-template-columns: 1fr; gap: 16px; }
+  h1 { font-size: clamp(2.65rem, 13vw, 4.2rem); line-height: .94; }
+  .subtitle { font-size: 1.08rem; line-height: 1.62; }
+  .notice span, p { font-size: 1rem; line-height: 1.62; }
+  .dashboard-overview { grid-template-columns: 1fr; }
+  .founder-summary { grid-column: auto; }
+  .summary-card { min-height: 0; padding: 20px; }
+  .summary-card strong { font-size: 2rem; }
+  .founder-summary strong { font-size: 2.45rem; }
+  .temporary-note { margin: 14px 0 16px; padding: 14px 16px; font-size: .98rem; line-height: 1.55; }
+  .steps { gap: 14px; }
+  .step { display: block; padding: 18px; }
+  .step-number { width: auto; min-height: 0; display: inline-flex; padding: 8px 12px; margin-bottom: 14px; border-radius: 999px; font-size: .84rem; }
+  h2 { font-size: 1.75rem; line-height: 1.05; }
+  h3 { font-size: 1.08rem; }
+  label, label span, .mini-note, .scenario-card small, td, th { font-size: .98rem; }
+  input { min-height: 48px; font-size: 1rem; }
+  button { min-height: 46px; }
+  .scenario-grid { grid-template-columns: 1fr; }
+  .scenario-card { min-height: 0; border-radius: 17px; }
+  .notes-grid { grid-template-columns: 1fr; }
+  .notes-grid p { padding: 13px 14px; }
+  .comparison-table-wrap::after { display: block; }
+  table { min-width: 720px; }
+  th, td { padding: 14px 12px; line-height: 1.45; }
+  th:first-child, td:first-child { position: sticky; left: 0; z-index: 2; background: var(--wp-white); box-shadow: 1px 0 0 var(--wp-border); }
+  th:first-child { background: var(--wp-black); }
+  .wp-footer { margin: 24px -16px -16px; padding: 24px 16px; display: grid; }
+  .wp-footer p { text-align: left; font-size: .92rem; }
+}

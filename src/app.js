@@ -248,6 +248,14 @@ function render() {
         </div>
       </article>
     </section>
+
+    <footer class="wp-footer" aria-label="West Peek footer">
+      <div class="wp-footer-brand">
+        <img src="./brand/wp-logo.png" alt="" aria-hidden="true" />
+        <div><strong>West Peek</strong><span>Founder Dilution Dashboard</span></div>
+      </div>
+      <p>Educational scenario modeling only. Review actual financing documents with qualified legal, tax, and financial advisors.</p>
+    </footer>
   `;
 }
 
