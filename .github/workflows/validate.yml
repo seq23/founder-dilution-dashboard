@@ -26,7 +26,10 @@ jobs:
         run: npm run build
       - name: Runbook names real paths and scripts
         run: npm run validate:runbook
-      - name: Install Playwright (chromium)
-        run: pip install playwright && python -m playwright install --with-deps chromium
+      # Same code path as a laptop: scripts/e2e.mjs builds .venv/ from requirements-e2e.txt and
+      # installs Chromium. E2E_INSTALL_DEPS=1 adds --with-deps so the runner gets Chromium's
+      # OS libraries too. No separate pip step, so CI and local can never drift on the pin.
       - name: Browser journey (Playwright E2E)
         run: npm run test:e2e
+        env:
+          E2E_INSTALL_DEPS: "1"

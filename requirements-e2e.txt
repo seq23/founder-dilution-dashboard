@@ -1,0 +1,3 @@
+# Python dependencies for the Playwright E2E harness (scripts/run-playwright-e2e.py).
+# Installed into the repo-local .venv/ by scripts/e2e.mjs; never into the system Python.
+playwright==1.63.0
