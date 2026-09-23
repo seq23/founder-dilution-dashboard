@@ -18,6 +18,8 @@ Package date: 2026-05-26
 - UI copy and brand screen in `scripts/validate-ui-copy.mjs`
 - static build script in `scripts/build.mjs`
 - local static server in `scripts/serve.mjs`
+- operator runbook `RUNBOOK.md`, guarded by `scripts/validate-runbook.mjs`
+- CI merge gate in `.github/workflows/validate.yml`
 - repo identity document
 - simplified validation matrix
 - hostile compiler report
@@ -42,8 +44,8 @@ Proof layers expected for this pass:
 - West Peek branding presence checks
 - Playwright E2E for branded surface, transactions, outcomes, temporary scenario behavior, reset, screenshots, and mobile journey
 - static build output
+- runbook names only real paths and npm scripts
 
 ## Unproven layers
 
 - deployed smoke
-- GitHub Actions status

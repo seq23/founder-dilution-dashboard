@@ -9,7 +9,8 @@
     "test:unit": "node tests/math.test.mjs && node tests/presets.test.mjs && node tests/session-behavior.test.mjs && node scripts/validate-ui-copy.mjs",
     "test:e2e": "python3 scripts/run-playwright-e2e.py",
     "test": "npm run test:unit && npm run test:e2e",
-    "validate:all": "npm run test && npm run build",
+    "validate:runbook": "node scripts/validate-runbook.mjs",
+    "validate:all": "npm run test && npm run build && npm run validate:runbook",
     "serve": "node scripts/serve.mjs"
   },
   "engines": {
