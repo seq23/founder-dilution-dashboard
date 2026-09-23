@@ -55,7 +55,8 @@ Key files: `src/math.js` (all founder money math), `src/scenarios.js` (built-in 
      `python3 -m playwright install chromium` locally). `npm run validate:all` runs everything.
 4. Look at it: `npm run serve`, check desktop and 390px width.
 5. Commit, push, open a PR. CI (`.github/workflows/validate.yml`) runs the same gate; Cloudflare
-   Pages posts a preview URL (`https://<hash>.founder-dilution-dashboard.pages.dev`) on the PR.
+   Pages comments a preview on the PR: `https://<hash>.founder-dilution-dashboard.pages.dev`
+   and the branch alias `https://<branch-slug>.founder-dilution-dashboard.pages.dev`.
 6. `~/bin/land <pr>` verifies green, squash-merges, watches `main`.
 7. Prove it live: `curl -sI https://dilution.joinwestpeek.com/` answers 200 and
    `curl -s https://dilution.joinwestpeek.com/ | grep <your change>` shows it.
