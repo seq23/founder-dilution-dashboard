@@ -12,7 +12,7 @@ This includes:
 - immutable/resettable example tests
 - temporary saved scenario tests
 - founder-facing copy and brand checks
-- anti-theatre Playwright E2E
+- anti-theatre Playwright E2E (self-bootstrapping: `scripts/e2e.mjs` creates `.venv/`, installs `requirements-e2e.txt` and Chromium, then runs the harness)
 - static build
 
 The Playwright E2E covers:

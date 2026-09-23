@@ -154,21 +154,20 @@ def run():
         set_number(page, '[data-testid="sale-price-input"]', 100000000)
         paid_twice_value = money_to_int(page.locator('[data-testid="investor-payback-result"]').inner_text())
         checkbox = page.locator('[data-action="round-0-getsPaidTwice"]')
-        if not checkbox.is_checked():
-            raise AssertionError("Investor Gets Paid Twice example should start checked")
+        expect(checkbox, "Investor Gets Paid Twice example should start checked").to_be_checked()
         page.evaluate("""() => { const box = document.querySelector('[data-action=\"round-0-getsPaidTwice\"]'); box.checked = false; box.dispatchEvent(new Event('input', { bubbles: true })); }""")
         single_pay_value = money_to_int(page.locator('[data-testid="investor-payback-result"]').inner_text())
         if paid_twice_value <= single_pay_value:
             raise AssertionError(f"Turning off paid-twice rights should reduce investor payout at high sale price. before={paid_twice_value}, after={single_pay_value}, checked={checkbox.is_checked()}")
 
         # Mechanism: add/remove round changes the number of editable financing blocks.
+        # The app re-renders the whole document on every click, so every read after a click
+        # goes through an auto-retrying expect() rather than a one-shot count()/input_value().
         round_count_before = page.locator('.round-card').count()
         page.locator('[data-testid="add-round"]').click()
-        if page.locator('.round-card').count() != round_count_before + 1:
-            raise AssertionError("Add another funding round did not create a usable round card")
+        expect(page.locator('.round-card'), "Add another funding round must create a usable round card").to_have_count(round_count_before + 1)
         page.get_by_role("button", name="Remove").last.click()
-        if page.locator('.round-card').count() != round_count_before:
-            raise AssertionError("Remove round did not return to the original round count")
+        expect(page.locator('.round-card'), "Remove round must return to the original round count").to_have_count(round_count_before)
 
         # Temporary save: user can save an edited version, leave it, come back, and see the edited numbers.
         click_example(page, "Heavy VC Stack")
@@ -179,13 +178,11 @@ def run():
         expect(page.locator('[data-testid="status-message"]')).to_contain_text("disappear if you refresh")
         click_example(page, "Clean Seed Round")
         click_example(page, "My Brutal Scenario")
-        if page.locator('[data-testid="founder-ownership-input"]').input_value() != "44":
-            raise AssertionError("Saved scenario did not preserve the founder's edited number during the active page")
+        expect(page.locator('[data-testid="founder-ownership-input"]'), "Saved scenario must preserve the founder's edited number during the active page").to_have_value("44")
 
         # Reset: custom scenario can be reset back to its original built-in example.
         page.locator('[data-testid="reset-current"]').click()
-        if page.locator('[data-testid="founder-ownership-input"]').input_value() != "70":
-            raise AssertionError("Reset to original example did not restore Heavy VC Stack founder ownership")
+        expect(page.locator('[data-testid="founder-ownership-input"]'), "Reset to original example must restore Heavy VC Stack founder ownership").to_have_value("70")
 
         # Clear: temporary saved scenarios can be removed.
         page.locator('[data-testid="clear-saved"]').click()

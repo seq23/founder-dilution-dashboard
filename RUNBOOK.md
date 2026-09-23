@@ -51,8 +51,13 @@ Key files: `src/math.js` (all founder money math), `src/scenarios.js` (built-in 
    - `npm run test:unit` (math, presets, temporary saves, UI copy + brand)
    - `npm run build`
    - `npm run validate:runbook`
-   - `npm run test:e2e` (Playwright browser journey; needs `pip install playwright` and
-     `python3 -m playwright install chromium` locally). `npm run validate:all` runs everything.
+   - `npm run test:e2e` (Playwright browser journey). Zero setup: `scripts/e2e.mjs` creates a
+     git-ignored `.venv/` with the `python3` on PATH, installs the `playwright` pin from
+     `requirements-e2e.txt`, installs Playwright's Chromium once, then runs
+     `scripts/run-playwright-e2e.py`. Never `pip install` into the system Python. To rebuild:
+     `rm -rf .venv`. Overrides: `E2E_PYTHON` (interpreter), `CHROMIUM_PATH` (browser binary),
+     `E2E_INSTALL_DEPS=1` (Linux only: also apt-install Chromium's libraries; CI sets it).
+     `npm run validate:all` runs everything.
 4. Look at it: `npm run serve`, check desktop and 390px width.
 5. Commit, push, open a PR. CI (`.github/workflows/validate.yml`) runs the same gate; Cloudflare
    Pages comments a preview on the PR: `https://<hash>.founder-dilution-dashboard.pages.dev`
@@ -74,6 +79,7 @@ record. Nothing to run by hand; never `wrangler pages deploy` from a laptop.
 | `tests/session-behavior.test.mjs` | saved scenarios are page-lifetime only |
 | `scripts/validate-ui-copy.mjs` | no internal language in UI copy; required warnings; logo present |
 | `scripts/run-playwright-e2e.py` | the real founder journey in a browser, desktop and mobile |
+| `scripts/e2e.mjs` | `npm run test:e2e` bootstraps its own `.venv/` and Chromium from `requirements-e2e.txt`; no system Python setup |
 | `scripts/validate-runbook.mjs` | this file names real paths and scripts |
 | `.github/workflows/validate.yml` | runs all of the above on every PR and on `main` |
 

@@ -36,6 +36,17 @@ Open the shown local URL.
 npm run validate:all
 ```
 
+No setup step is needed beyond Node 18+ and a `python3` on PATH. The browser
+journey (`npm run test:e2e`) bootstraps itself on first run: `scripts/e2e.mjs`
+creates a repo-local `.venv/` (gitignored), installs the `playwright` package
+pinned in `requirements-e2e.txt`, installs Playwright's Chromium build, and then
+runs `scripts/run-playwright-e2e.py` with that interpreter. Later runs skip the
+install unless `requirements-e2e.txt` changes. Nothing touches the system Python.
+
+- To use a specific interpreter for the venv: `E2E_PYTHON=/path/to/python3 npm run test:e2e`
+- To use a specific browser binary: `CHROMIUM_PATH=/path/to/chrome npm run test:e2e`
+- To rebuild from scratch: `rm -rf .venv && npm run test:e2e`
+
 The validation suite checks:
 
 - founder money math
