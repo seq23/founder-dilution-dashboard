@@ -1,0 +1,32 @@
+name: validate
+
+# The merge gate for founder-dilution-dashboard. Cloudflare Pages builds and deploys `main`
+# on its own (Git integration); this workflow is what proves a change is safe first, and it
+# is the run ~/bin/land watches on `main`.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests, money math and UI copy
+        run: npm run test:unit
+      - name: Static build
+        run: npm run build
+      - name: Runbook names real paths and scripts
+        run: npm run validate:runbook
+      - name: Install Playwright (chromium)
+        run: pip install playwright && python -m playwright install --with-deps chromium
+      - name: Browser journey (Playwright E2E)
+        run: npm run test:e2e
