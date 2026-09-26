@@ -51,25 +51,32 @@ Key files: `src/math.js` (all founder money math), `src/scenarios.js` (built-in 
    - `npm run test:unit` (math, presets, temporary saves, UI copy + brand)
    - `npm run build`
    - `npm run validate:runbook`
-   - `npm run test:e2e` (Playwright browser journey). Zero setup: `scripts/e2e.mjs` creates a
-     git-ignored `.venv/` with the `python3` on PATH, installs the `playwright` pin from
+   - `npm run validate:workflows` (the browser journey stays nightly, production moves only by promote)
+   - `npm run test:e2e` (Playwright browser journey) ONLY if your change touches what it covers —
+     in CI it runs nightly, not per merge (see "How it deploys"). Zero setup: `scripts/e2e.mjs`
+     creates a git-ignored `.venv/` with the `python3` on PATH, installs the `playwright` pin from
      `requirements-e2e.txt`, installs Playwright's Chromium once, then runs
      `scripts/run-playwright-e2e.py`. Never `pip install` into the system Python. To rebuild:
      `rm -rf .venv`. Overrides: `E2E_PYTHON` (interpreter), `CHROMIUM_PATH` (browser binary),
      `E2E_INSTALL_DEPS=1` (Linux only: also apt-install Chromium's libraries; CI sets it).
      `npm run validate:all` runs everything.
 4. Look at it: `npm run serve`, check desktop and 390px width.
-5. Commit, push, open a PR. CI (`.github/workflows/validate.yml`) runs the same gate; Cloudflare
+5. Commit, push, open a PR. CI (`.github/workflows/validate.yml`) runs the same fast gate; Cloudflare
    Pages comments a preview on the PR: `https://<hash>.founder-dilution-dashboard.pages.dev`
    and the branch alias `https://<branch-slug>.founder-dilution-dashboard.pages.dev`.
 6. `~/bin/land <pr>` verifies green, squash-merges, watches `main`.
-7. Prove it live: `curl -sI https://dilution.joinwestpeek.com/` answers 200 and
-   `curl -s https://dilution.joinwestpeek.com/ | grep <your change>` shows it.
+7. Prove it on staging: `curl -s https://main.founder-dilution-dashboard.pages.dev/ | grep <your change>`.
+   Production follows after the nightly browser journey (below).
 
-## How it deploys
-Cloudflare Pages Git integration builds every push to `main` (`npm run build`, output `dist/`)
-and deploys it to production; the "Cloudflare Pages" check-run on the merge commit is the deploy
-record. Nothing to run by hand; never `wrangler pages deploy` from a laptop.
+## How it deploys (build first, test in batches — 26 Sep 2026)
+- **Staging = `main`.** Cloudflare Pages Git integration builds every push to `main` (`npm run build`,
+  output `dist/`) as the preview https://main.founder-dilution-dashboard.pages.dev.
+- **Production = the `production` branch** (dilution.joinwestpeek.com). Only `.github/workflows/promote.yml`
+  moves it, and only to a sha the browser journey passed: `.github/workflows/e2e.yml` runs nightly
+  (07:20 UTC) and on dispatch; on success promote fast-forwards `production` to that sha.
+- **Promote by hand**: `gh workflow run e2e.yml --ref main` (runs the journey on main's head; green →
+  promote fires), or `gh workflow run promote.yml -f sha=<sha>` for a sha that already has a green run.
+- A red nightly leaves production where it is; fix main first. Never `wrangler pages deploy` from a laptop.
 
 ## Guards, and what each pins
 | Script | Pins |
@@ -81,6 +88,9 @@ record. Nothing to run by hand; never `wrangler pages deploy` from a laptop.
 | `scripts/run-playwright-e2e.py` | the real founder journey in a browser, desktop and mobile |
 | `scripts/e2e.mjs` | `npm run test:e2e` bootstraps its own `.venv/` and Chromium from `requirements-e2e.txt`; no system Python setup |
 | `scripts/validate-runbook.mjs` | this file names real paths and scripts |
-| `.github/workflows/validate.yml` | runs all of the above on every PR and on `main` |
+| `scripts/validate-workflows.mjs` | `validate.yml` never runs the browser journey; `e2e.yml` is schedule + dispatch only, with a ceiling; `promote.yml` moves `production` only on e2e success |
+| `.github/workflows/validate.yml` | the merge gate: unit, build, runbook and workflow guards on every PR and on `main` (~1 min) |
+| `.github/workflows/e2e.yml` | the browser journey, nightly 07:20 UTC + dispatch — gates production, never the merge |
+| `.github/workflows/promote.yml` | fast-forwards `production` to the e2e-green sha (auto on e2e success; by hand with a sha that has one) |
 
 Prove a new guard negatively before merging: plant the defect, watch it fail, remove it.

@@ -1,35 +1,39 @@
 name: validate
 
-# The merge gate for founder-dilution-dashboard. Cloudflare Pages builds and deploys `main`
-# on its own (Git integration); this workflow is what proves a change is safe first, and it
-# is the run ~/bin/land watches on `main`.
+# The MERGE GATE for founder-dilution-dashboard: unit tests, the static build, the runbook and
+# workflow guards — under two minutes. It is the run ~/bin/land watches on `main`.
+#
+# Build first, test in batches (26 Sep 2026): the Playwright browser journey is NOT here. It runs
+# nightly and on dispatch in `e2e.yml`, and gates PRODUCTION, not the merge: Cloudflare Pages
+# builds every push to `main` as the staging preview (https://main.founder-dilution-dashboard.pages.dev)
+# and builds the `production` branch to dilution.joinwestpeek.com; `promote.yml` moves that
+# branch only to a sha the journey has passed. `scripts/validate-workflows.mjs` fails this run if
+# the journey ever comes back on push or pull_request.
 on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Normal: ~1 min (runs 35920287012, 35878588760 took 59 s and 54 s WITH the browser journey).
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
       - name: Unit tests, money math and UI copy
         run: npm run test:unit
       - name: Static build
         run: npm run build
       - name: Runbook names real paths and scripts
         run: npm run validate:runbook
-      # Same code path as a laptop: scripts/e2e.mjs builds .venv/ from requirements-e2e.txt and
-      # installs Chromium. E2E_INSTALL_DEPS=1 adds --with-deps so the runner gets Chromium's
-      # OS libraries too. No separate pip step, so CI and local can never drift on the pin.
-      - name: Browser journey (Playwright E2E)
-        run: npm run test:e2e
-        env:
-          E2E_INSTALL_DEPS: "1"
+      - name: The browser journey is nightly, never per merge; production moves only by promote
+        run: npm run validate:workflows
