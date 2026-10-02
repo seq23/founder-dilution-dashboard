@@ -51,9 +51,10 @@ Key files: `src/math.js` (all founder money math), `src/scenarios.js` (built-in 
    - `npm run test:unit` (math, presets, temporary saves, UI copy + brand)
    - `npm run build`
    - `npm run validate:runbook`
-   - `npm run validate:workflows` (the browser journey stays nightly, production moves only by promote)
+   - `npm run validate:workflows` (the browser journey stays on demand only — `workflow_dispatch`, no cron; production moves only by promote)
    - `npm run test:e2e` (Playwright browser journey) ONLY if your change touches what it covers —
-     in CI it runs nightly, not per merge (see "How it deploys"). Zero setup: `scripts/e2e.mjs`
+     in CI it runs on demand only, never per merge and never on a schedule (see "How it deploys").
+     Zero setup: `scripts/e2e.mjs`
      creates a git-ignored `.venv/` with the `python3` on PATH, installs the `playwright` pin from
      `requirements-e2e.txt`, installs Playwright's Chromium once, then runs
      `scripts/run-playwright-e2e.py`. Never `pip install` into the system Python. To rebuild:
@@ -66,17 +67,23 @@ Key files: `src/math.js` (all founder money math), `src/scenarios.js` (built-in 
    and the branch alias `https://<branch-slug>.founder-dilution-dashboard.pages.dev`.
 6. `~/bin/land <pr>` verifies green, squash-merges, watches `main`.
 7. Prove it on staging: `curl -s https://main.founder-dilution-dashboard.pages.dev/ | grep <your change>`.
-   Production follows after the nightly browser journey (below).
+   Production follows after an on-demand browser journey passes on that sha (below): dispatch it
+   yourself, or let `land --promote founder-dilution-dashboard --run-e2e` / `land` after a large
+   change do it.
 
 ## How it deploys (build first, test in batches — 26 Sep 2026)
 - **Staging = `main`.** Cloudflare Pages Git integration builds every push to `main` (`npm run build`,
   output `dist/`) as the preview https://main.founder-dilution-dashboard.pages.dev.
 - **Production = the `production` branch** (dilution.joinwestpeek.com). Only `.github/workflows/promote.yml`
-  moves it, and only to a sha the browser journey passed: `.github/workflows/e2e.yml` runs nightly
-  (07:20 UTC) and on dispatch; on success promote fast-forwards `production` to that sha.
+  moves it, and only to a sha the browser journey passed: `.github/workflows/e2e.yml` runs ON DEMAND
+  ONLY (owner decision 2 Oct 2026, supersedes the 26 Sep nightly) — dispatched by a person
+  (`gh workflow run e2e.yml --ref main`), by `land --promote founder-dilution-dashboard --run-e2e`,
+  or by `land` after a large change (the `land` PR in seq23/seq-bin defines "large"); on success
+  promote fast-forwards `production` to that sha. There is no cron: `scripts/validate-workflows.mjs`
+  fails the merge gate if one comes back.
 - **Promote by hand**: `gh workflow run e2e.yml --ref main` (runs the journey on main's head; green →
   promote fires), or `gh workflow run promote.yml -f sha=<sha>` for a sha that already has a green run.
-- A red nightly leaves production where it is; fix main first. Never `wrangler pages deploy` from a laptop.
+- A red e2e run leaves production where it is; fix main first. Never `wrangler pages deploy` from a laptop.
 
 ## Guards, and what each pins
 | Script | Pins |
@@ -88,9 +95,9 @@ Key files: `src/math.js` (all founder money math), `src/scenarios.js` (built-in 
 | `scripts/run-playwright-e2e.py` | the real founder journey in a browser, desktop and mobile |
 | `scripts/e2e.mjs` | `npm run test:e2e` bootstraps its own `.venv/` and Chromium from `requirements-e2e.txt`; no system Python setup |
 | `scripts/validate-runbook.mjs` | this file names real paths and scripts |
-| `scripts/validate-workflows.mjs` | `validate.yml` never runs the browser journey; `e2e.yml` is schedule + dispatch only, with a ceiling; `promote.yml` moves `production` only on e2e success |
+| `scripts/validate-workflows.mjs` | `validate.yml` never runs the browser journey; `e2e.yml` triggers are exactly `workflow_dispatch` (any `schedule` cron fails), with a ceiling; `promote.yml` moves `production` only on e2e success |
 | `.github/workflows/validate.yml` | the merge gate: unit, build, runbook and workflow guards on every PR and on `main` (~1 min) |
-| `.github/workflows/e2e.yml` | the browser journey, nightly 07:20 UTC + dispatch — gates production, never the merge |
+| `.github/workflows/e2e.yml` | the browser journey, `workflow_dispatch` only (a person, `land --promote --run-e2e`, or `land` after a large change; no cron) — gates production, never the merge |
 | `.github/workflows/promote.yml` | fast-forwards `production` to the e2e-green sha (auto on e2e success; by hand with a sha that has one) |
 
 Prove a new guard negatively before merging: plant the defect, watch it fail, remove it.
