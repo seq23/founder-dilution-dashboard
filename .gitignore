@@ -9,3 +9,6 @@ test-results/
 !.env.example
 !.env.local.example
 .venv/
+
+# Wrangler local cache
+.wrangler/
