@@ -1,3 +1,5 @@
+Live: https://dilution.joinwestpeek.com
+
 # Founder Dilution Dashboard by West Peek
 
 A branded, plain-English dashboard for tech founders to understand ownership dilution, investor payback rights, payment order, and the sale price required before founders personally make money.
