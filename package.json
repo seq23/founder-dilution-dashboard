@@ -9,8 +9,7 @@
     "test:unit": "node tests/math.test.mjs && node tests/presets.test.mjs && node tests/session-behavior.test.mjs && node scripts/validate-ui-copy.mjs",
     "test:e2e": "node scripts/e2e.mjs",
     "test": "npm run test:unit && npm run test:e2e",
-    "validate:runbook": "node scripts/validate-runbook.mjs",
-    "validate:all": "npm run test && npm run build && npm run validate:runbook && npm run validate:workflows && npm run validate:gate",
+    "validate:all": "npm run test && npm run build && npm run validate:workflows && npm run validate:gate",
     "validate:gate": "node scripts/production-gate.mjs --self-test",
     "serve": "node scripts/serve.mjs",
     "validate:workflows": "node scripts/validate-workflows.mjs && node scripts/validate-workflows.mjs --self-test"

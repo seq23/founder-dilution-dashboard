@@ -18,7 +18,7 @@ Package date: 2026-05-26
 - UI copy and brand screen in `scripts/validate-ui-copy.mjs`
 - static build script in `scripts/build.mjs`
 - local static server in `scripts/serve.mjs`
-- operator runbook `RUNBOOK.md`, guarded by `scripts/validate-runbook.mjs`
+- operator runbook `RUNBOOK.md`
 - CI merge gate in `.github/workflows/validate.yml`
 - repo identity document
 - simplified validation matrix

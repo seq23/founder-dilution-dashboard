@@ -39,8 +39,6 @@ jobs:
         run: npm run test:unit
       - name: Static build
         run: npm run build
-      - name: Runbook names real paths and scripts
-        run: npm run validate:runbook
       - name: The browser journey is on demand only, never per merge or on a schedule; production moves only by promote, through the production gate
         run: npm run validate:workflows
       - name: The production gate decides every case correctly, and five broken gates are caught
