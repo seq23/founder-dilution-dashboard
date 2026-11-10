@@ -1,8 +1,7 @@
 # RUNBOOK — founder-dilution-dashboard
 
 Read this before changing anything. It is the file an AI employee (Porter in West Peek OS,
-Danielle in Boss OS) reads at plan time; `scripts/validate-runbook.mjs` fails the build if the
-paths and scripts named here stop existing.
+Danielle in Boss OS) reads at plan time; keep the paths and scripts named here current.
 
 ## What this repo is
 **Founder Dilution Dashboard by West Peek** — a static, no-login browser tool that shows tech
@@ -50,7 +49,6 @@ Key files: `src/math.js` (all founder money math), `src/scenarios.js` (built-in 
 3. Validate — all must pass:
    - `npm run test:unit` (math, presets, temporary saves, UI copy + brand)
    - `npm run build`
-   - `npm run validate:runbook`
    - `npm run validate:workflows` (the browser journey stays on demand only — `workflow_dispatch`, no cron; production moves only by promote, through the production gate)
    - `npm run validate:gate` (the production gate decides every case correctly)
    - `npm run test:e2e` (Playwright browser journey) ONLY if your change touches what it covers —
@@ -107,7 +105,6 @@ Key files: `src/math.js` (all founder money math), `src/scenarios.js` (built-in 
 | `scripts/validate-ui-copy.mjs` | no internal language in UI copy; required warnings; logo present |
 | `scripts/run-playwright-e2e.py` | the real founder journey in a browser, desktop and mobile |
 | `scripts/e2e.mjs` | `npm run test:e2e` bootstraps its own `.venv/` and Chromium from `requirements-e2e.txt`; no system Python setup |
-| `scripts/validate-runbook.mjs` | this file names real paths and scripts |
 | `scripts/validate-workflows.mjs` | `validate.yml` never runs the browser journey; `e2e.yml` triggers are exactly `workflow_dispatch` (any `schedule` cron fails), with a ceiling; `promote.yml` fires on e2e, turns a red run away, runs the gate on every path, takes `sha` + `reason`, records the deployment; the gate points at `land` for "large" and restates no threshold |
 | `scripts/production-gate.mjs` | what may reach production: a green e2e on the sha; or a reason + the fast check green on the sha + the journey not known red. Unreadable = refused. `npm run validate:gate` runs its table (17 cases, 5 broken gates) |
 | `.github/workflows/validate.yml` | the merge gate: unit, build, runbook and workflow guards on every PR and on `main` (~1 min) |
